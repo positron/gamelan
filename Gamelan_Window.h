@@ -29,6 +29,9 @@ class Gamelan_Window : public Window
 
 		//callbacks
 		static void cb_play( Address, Address );
+		static void cb_amazing( Address, Address );
+		static void cb_sweet( Address, Address );
+		static void cb_west( Address, Address );
 
 	private:
 		vector<Gam_String *> strings;
@@ -38,6 +41,12 @@ class Gamelan_Window : public Window
 		time_t start, end; //use double difftime(time_t start, time_t end);
 
 		bool game; //is true when the game is being played, and false when not
+
+		//start screen objects
+		In_box in_name;
+		Button but_amazing;
+		Button but_sweet;
+		Button but_west;
 };
 
 //defaults

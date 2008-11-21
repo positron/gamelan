@@ -10,5 +10,6 @@ int main()
 	if( H112 != 200803L ) error("Error: incorrect std_lib_facilities.h version ", H112);
 
 	Gamelan_Window *win = new Gamelan_Window();
-	return 0;
+	//start the event loop (so the screen doesn't just close again right away)
+	return Fl::run();
 }
