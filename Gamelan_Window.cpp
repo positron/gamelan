@@ -1,6 +1,4 @@
 #pragma once
-#include "../../GUI.h"
-#include "../../Graph.h"
 #include <time.h>
 #include "Gamelan_Window.h"
 
@@ -16,8 +14,8 @@ Gamelan_Window::Gamelan_Window()
 	but_sweet( Point((x_max()-400),(y_max()-150)),200,20,"Swing Low, Sweet Chariot", cb_sweet),
 	but_west( Point((x_max()-400),(y_max()-100)),200,20,"Westminster", cb_west)
 {
-	for( int i = 0; i < 7; i++ )
-		strings[i] = new Gam_String();
+//	for( int i = 0; i < 7; i++ )
+//		strings[i] = new Gam_String();
 	init();
 }
 

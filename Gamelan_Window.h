@@ -1,10 +1,13 @@
 #pragma once
 #include "../../GUI.h"
 #include "../../Graph.h"
-#include <time.h>
 #include "Gam_String.h"
+#include <time.h>
 
 using namespace Graph_lib;
+
+//forward declares
+class Gam_String;
 
 /** Gamelan_Window will manage the game from start to end.  All it needs to do
  * is bre created.  When it is created the constructor calls init, which starts

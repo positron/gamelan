@@ -5,6 +5,7 @@
  */
 namespace Score_IO
 {
+//TODO: move the scores file to a folder with the music files?
 //the high scores file resides in the same directory as the game executable
 static const string SCORE_FILE = "scores.txt";
  
@@ -29,9 +30,9 @@ vector<string> read_lines()
 }
  
 /* This function returns a vector of high score strings formatted like this:
- * name score
- * name two score two
- * ... etc
+ * "name" "score"
+ * "name two" "score two"
+ *  ... etc
  */
 vector<string> top_scores()
 {
@@ -50,8 +51,10 @@ vector<string> top_scores()
 /* This function takes a new score and name and adds it in order to the high
  * scores file. It reads the data currently in the file, decides where to
  * insert the new name and score, and then truncates the file and writes back
- * all the data. It will never leave the file with more than 5 scores or out
- * of order scores.
+ * all the data.
+ *
+ * Invariant (or whatever you call it:
+ * It will never leave the file with more than 5 scores or out of order scores.
  */
 void add_score( string name, int new_score )
 {

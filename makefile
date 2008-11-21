@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-c -w -g
 LDFLAGS=-w -g ../../GUI.o ../../Window.o ../../Graph.o -lfltk -lXft -lfltk_images
-SOURCES=Gamelan_Window.h Gamelan_Window.cpp Gamelan.cpp
+SOURCES=Gamelan_Window.h Gamelan_Window.cpp Gamelan.cpp Gam_String.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=game
 	 
