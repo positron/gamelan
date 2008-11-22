@@ -30,6 +30,8 @@ class Gamelan_Window : public Window
 
 		inline bool get_game() { return game; }
 
+		void increment_all();
+
 		//callbacks
 		static void cb_play( Address, Address );
 		static void cb_amazing( Address, Address );

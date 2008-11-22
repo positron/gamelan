@@ -14,8 +14,8 @@ Gamelan_Window::Gamelan_Window()
 	but_sweet( Point((x_max()-400),(y_max()-150)),200,20,"Swing Low, Sweet Chariot", cb_sweet),
 	but_west( Point((x_max()-400),(y_max()-100)),200,20,"Westminster", cb_west)
 {
-//	for( int i = 0; i < 7; i++ )
-//		strings[i] = new Gam_String();
+	for( int i = 0; i < 7; i++ )
+		strings[i] = new Gam_String( Point( 200 + 25*i, 20 ), -90 + 30*i, 500, 6 );
 	init();
 }
 
@@ -37,18 +37,44 @@ void Gamelan_Window::init()
 
 void Gamelan_Window::play()
 {
+	//detach start screen objects
 	detach( in_name );
 	detach( but_amazing );
 	detach( but_sweet );
 	detach( but_west );
+
+	//attach game objects
+	for( int i = 0; i < 7; i++ )
+		strings[i]->attach( *this );
+	strings[2]->add_note();
+	strings[2]->add_note(4);
+	strings[0]->add_note();
+	strings[0]->add_note(3);
+	strings[6]->add_note();
+	strings[6]->add_note(2);
+	increment_all();
+	increment_all();
+
 	//start the timer
 	time( &start );
 }
 
 void Gamelan_Window::end_game()
 {
+	//calculate time elapsed
 	time( &end );
 	double time = difftime( end, start );
+
+	//detach game objects
+	for( int i = 0; i < 7; i++ )
+		strings[i]->detach();
+}
+
+//increment all strings (ie slide all notes down)
+void Gamelan_Window::increment_all()
+{
+	for( int i = 0; i < 7; i++ )
+		strings[i]->increment();
 }
 
 void Gamelan_Window::cb_amazing( Address, Address gw )

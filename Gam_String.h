@@ -22,6 +22,7 @@ class Gam_String
 
 		void increment();
 		void add_note();
+		void add_note( int i );
 
 		//handle mouse events. Returns true if it hit a note.
 		bool handle_mouse( int x, int y );
@@ -34,6 +35,8 @@ class Gam_String
 		vector<Circle*> notes;
 		Point top;
 		int dx, dy, divisions;
+
+		Line line;
 
 		Gamelan_Window* win;
 };
