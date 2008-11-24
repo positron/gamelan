@@ -41,25 +41,37 @@ void Gam_String::add_note( int i )
  */
 void Gam_String::increment()
 {
+	//delete last note if it exists
+	if( notes[ divisions - 1 ] )
+	{
+		cout << 'r';
+//		win->detach( * notes[ divisions - 1 ] );
+//		delete notes[ divisions - 1 ];
+	}
 	Circle * temp1 = NULL;
 	Circle * temp2 = NULL;
-	for( int i = 0; i < divisions; i++ )
+	for( int i = 0; i < notes.size(); i++ )
 	{
 		if( notes[i] )
 		{
+			cout << i;
+			//because rounding errors tend to accumulate, we first calculate where
+			//the center square should be, then add the right amound to get it there
+			//instead of just adding the same amount each time
 			int radius = 10 + (double)(i)/(divisions-1)*20.0;
 			notes[i]->set_radius( radius );
-			notes[i]->move( (double)dx/(divisions-1), (double)dy/(divisions-1) );
+			//where it's supposed to be
+			int x = top.x + (double)(i)/(divisions-1)*dx;
+			int y = top.y + (double)(i)/(divisions-1)*dy;
+			//movement required to get there
+			x = x - notes[i]->center().x;
+			y = y - notes[i]->center().y;
+			notes[i]->move( x, y );
+			cout << i;
 		}
 		temp1 = notes[i];
 		notes[i] = temp2;
 		temp2 = temp1;
-	}
-	//delete last note if it exists
-	if( temp2 )
-	{
-			win->detach( *temp2 );
-			delete temp2;
 	}
 }
 

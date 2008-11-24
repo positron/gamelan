@@ -2,8 +2,8 @@
 
 #include "../../std_lib_facilities.h"
 
-/** This file contains a function that reads in a song file into a vector
- * of ints. It returns an empty vector of an error occurs.
+/** This file contains a function that reads in a song file into a zero based
+ * vector of ints. It returns an empty vector of an error occurs.
  */
 vector<int> read_song_file( string filename )
 {
@@ -21,13 +21,14 @@ vector<int> read_song_file( string filename )
 	while( !indata.eof() )
 	{
 		indata >> num;
-		notes.push_back( num );
+		//minus 1 because we want it to be zero based
+		notes.push_back( num - 1 );
 	}
 	indata.close();
 	return notes;
 }
 
-//for testing
+/*for testing
 int main()
 {
 	vector<int> song = read_song_file( "test.txt" );
@@ -36,4 +37,4 @@ int main()
 	for( int i = 0; i < song.size(); i++ )
 		cout << song[i] << " ";
 	keep_window_open();
-}
+}*/

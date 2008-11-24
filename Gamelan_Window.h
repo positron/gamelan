@@ -27,10 +27,11 @@ class Gamelan_Window : public Window
 		void play();
 		void end_game();
 		void display_scores();
+		void increment_all();
+
+		int handle( int );
 
 		inline bool get_game() { return game; }
-
-		void increment_all();
 
 		//callbacks
 		static void cb_play( Address, Address );

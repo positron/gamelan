@@ -1,6 +1,7 @@
 #pragma once
 #include <time.h>
 #include "Gamelan_Window.h"
+#include "read_song.h"
 
 //Window constans (DEF_TITLE, etc) are defined in Gamelan_Window.h
 Gamelan_Window::Gamelan_Window()
@@ -15,7 +16,7 @@ Gamelan_Window::Gamelan_Window()
 	but_west( Point((x_max()-400),(y_max()-100)),200,20,"Westminster", cb_west)
 {
 	for( int i = 0; i < 7; i++ )
-		strings[i] = new Gam_String( Point( 200 + 25*i, 20 ), -90 + 30*i, 500, 6 );
+		strings[i] = new Gam_String( Point( 200 + 25*i, 50 ), -105 + 35*i, 700, 6 );
 	init();
 }
 
@@ -37,6 +38,7 @@ void Gamelan_Window::init()
 
 void Gamelan_Window::play()
 {
+	song = read_song_file( "songs/test.txt" );
 	//detach start screen objects
 	detach( in_name );
 	detach( but_amazing );
@@ -46,28 +48,69 @@ void Gamelan_Window::play()
 	//attach game objects
 	for( int i = 0; i < 7; i++ )
 		strings[i]->attach( *this );
-	strings[2]->add_note();
-	strings[2]->add_note(4);
-	strings[0]->add_note();
-	strings[0]->add_note(3);
-	strings[6]->add_note();
-	strings[6]->add_note(2);
-	increment_all();
-	increment_all();
 
+	//attach the first several notes
+	for( int i = 0; i < 6; i++ )
+	{/*
+		cout << i << '|';
+		increment_all();
+		strings[ song[i] ]->add_note();
+		cout << '|' << i;
+		cout << '\n';*/
+	}
+	strings[ song[0] ]->add_note();
+	increment_all();
+	strings[ song[1] ]->add_note();
+	increment_all();
+	strings[ song[2] ]->add_note();
+	increment_all();
+	strings[ song[3] ]->add_note();
+	increment_all();
+	strings[ song[4] ]->add_note();
+	increment_all();
+	strings[ song[5] ]->add_note();
+	increment_all();
+	Fl::redraw();
+
+	//set the cursor to be a crosshairs
+	cursor( FL_CURSOR_CROSS );
+
+	game = true;
 	//start the timer
 	time( &start );
 }
 
+int Gamelan_Window::handle( int event )
+{
+	//propogate the event if we don't care about it
+	if( event != FL_RELEASE || !game )
+		return Window::handle(event);
+
+	//calculate what string it hit by
+
+	//let the event bubble down
+	return Window::handle(event);
+}
+
 void Gamelan_Window::end_game()
 {
+	game = false;
 	//calculate time elapsed
 	time( &end );
 	double time = difftime( end, start );
 
+	//set the cursor back to normal
+	cursor( FL_CURSOR_DEFAULT );
+
 	//detach game objects
 	for( int i = 0; i < 7; i++ )
 		strings[i]->detach();
+
+	display_scores();
+}
+
+void Gamelan_Window::display_scores()
+{
 }
 
 //increment all strings (ie slide all notes down)
