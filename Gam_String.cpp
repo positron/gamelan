@@ -9,76 +9,67 @@
  *                the entire string
  */
 Gam_String::Gam_String( Point top_pt, int dxx, int dyy, int num_divisions )
-	:top(top_pt), dx(dxx), dy(dyy), divisions(num_divisions), notes( num_divisions, NULL ),
+	:top(top_pt), dx(dxx), dy(dyy), divisions(num_divisions), notes( num_divisions ),
 	 line( top_pt, Point( top_pt.x + dxx, top_pt.y + dyy ) )
 {
+	for( int i = 0; i < num_divisions; i++ )
+		notes[i].circ = create_note( i );
 }
 
 Gam_String::~Gam_String()
 {
 }
 
-//adds a note to the top of this String (position 0 in the vector)
+//adds a note (ie makes visible) to the top of this string
 void Gam_String::add_note()
 {
-	add_note( 0 );
+	notes[0].displayed = true;
+	win->attach( notes[0].circle() );
 }
 
-//add a note at the ith division of this string with correctly computed radius
-void Gam_String::add_note( int i )
+//creates a note at the ith division of this string with correctly computed
+//radius and position
+Circle* Gam_String::create_note( int i )
 {
-	//sanity check: if there is already a note at the top don't do anything
-	if( notes[i] ) return;
 	Point pt( top.x + (double)(i)/(divisions-1)*dx, top.y + (double)(i)/(divisions-1)*dy );
 	//radius is 10 at top and 30 at bottom
 	int radius = 10 + (double)(i)/(divisions-1)*20.0;
-	notes[i] = new Circle( pt, radius );
-	//cout << pt.x << " " << pt.y << " " << radius << "\n";
-	win->attach( * notes[i] );
+	//we must make a new circle otherwise it would go out of scope when this function ends
+	Circle * c = new Circle( pt, radius );
+	return c;
 }
 
 /** Slide all the notes down one.
  */
 void Gam_String::increment()
 {
-	//delete last note if it exists
-	if( notes[ divisions - 1 ] )
+	for( int i = divisions - 1; i > 0; i-- )
 	{
-		cout << 'r';
-//		win->detach( * notes[ divisions - 1 ] );
-//		delete notes[ divisions - 1 ];
-	}
-	Circle * temp1 = NULL;
-	Circle * temp2 = NULL;
-	for( int i = 0; i < notes.size(); i++ )
-	{
-		if( notes[i] )
+		if( !notes[i].displayed && notes[i-1].displayed )
 		{
-			cout << i;
-			//because rounding errors tend to accumulate, we first calculate where
-			//the center square should be, then add the right amound to get it there
-			//instead of just adding the same amount each time
-			int radius = 10 + (double)(i)/(divisions-1)*20.0;
-			notes[i]->set_radius( radius );
-			//where it's supposed to be
-			int x = top.x + (double)(i)/(divisions-1)*dx;
-			int y = top.y + (double)(i)/(divisions-1)*dy;
-			//movement required to get there
-			x = x - notes[i]->center().x;
-			y = y - notes[i]->center().y;
-			notes[i]->move( x, y );
-			cout << i;
+			notes[i].displayed = true;
+			win->attach( notes[i].circle() );
 		}
-		temp1 = notes[i];
-		notes[i] = temp2;
-		temp2 = temp1;
+		else if( notes[i].displayed && !notes[i-1].displayed )
+		{
+			notes[i].displayed = false;
+			win->detach( notes[i].circle() );
+		}
+	}
+	if( notes[0].displayed )
+	{
+		notes[0].displayed = false;
+		win->detach( notes[0].circle() );
 	}
 }
 
 bool Gam_String::handle_mouse( int x, int y )
 {
+	//cout << x << " " << y << " " << notes[ divisions - 1 ].displayed << '\n';
 	//if there is no note to even click, return false
-	if( !notes[ divisions - 1 ] ) return false;
+	if( !notes[ divisions - 1 ].displayed ) return false;
+
+	return true;
 }
 
 void Gam_String::attach( Gamelan_Window& w )
@@ -87,8 +78,11 @@ void Gam_String::attach( Gamelan_Window& w )
 	win->attach( line );
 }
 
-//detach the string. detach remaining notes and free their memory
+//detach the string. detach remaining notes
 void Gam_String::detach()
 {
 	win->detach( line );
+	for( int i = 0; i < notes.size(); i++ )
+		if( notes[i].displayed )
+			win->detach( notes[i].circle() );
 }

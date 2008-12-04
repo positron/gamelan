@@ -1,4 +1,5 @@
 #pragma once
+#include "../../std_lib_facilities.h";
  
 /* This file contains two functions to add a score to the top score list
  * and to read in the top score list in vector format.

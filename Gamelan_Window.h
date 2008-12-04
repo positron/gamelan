@@ -24,9 +24,9 @@ class Gamelan_Window : public Window
 		~Gamelan_Window();
 
 		void init();
-		void play();
+		void play( string file );
 		void end_game();
-		void display_scores();
+		void display_scores( int score );
 		void increment_all();
 
 		int handle( int );
@@ -41,8 +41,9 @@ class Gamelan_Window : public Window
 
 	private:
 		vector<Gam_String *> strings;
+		int index; //current note in song
+
 		string user_name;
-		int num_notes;
 		vector<int> song;
 		time_t start, end; //use double difftime(time_t start, time_t end);
 
@@ -53,6 +54,13 @@ class Gamelan_Window : public Window
 		Button but_amazing;
 		Button but_sweet;
 		Button but_west;
+
+		//final screen objects
+		Text score1;
+		Text score2;
+		Text score3;
+		Text score4;
+		Text score5;
 };
 
 //defaults
@@ -60,3 +68,4 @@ static Point DEF_LOCATION = Point(50,50);
 static const int DEF_WIDTH = 600;
 static const int DEF_HEIGHT = 800;
 static string DEF_TITLE = "Gamelan Hero";
+static const int NUM_DIVISIONS = 6;

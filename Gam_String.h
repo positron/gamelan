@@ -9,6 +9,14 @@ using namespace Graph_lib;
 //forward declares
 class Gamelan_Window;
 
+//each Gam_String has an array of these and only displays select ones at a time
+struct Note
+{
+	Circle* circ;
+	bool displayed;
+	Circle& circle() { return * circ; }
+};
+
 /** This class knows it's slope and position, so it can calculate how to
  * display itself.  You can add notes to it and it will display them too. When
  * you call increment() all the notes on the string will slide down one notch.
@@ -22,7 +30,7 @@ class Gam_String
 
 		void increment();
 		void add_note();
-		void add_note( int i );
+		Circle* create_note( int i );
 
 		//handle mouse events. Returns true if it hit a note.
 		bool handle_mouse( int x, int y );
@@ -32,7 +40,7 @@ class Gam_String
 		void detach();
 
 	private:
-		vector<Circle*> notes;
+		vector<Note> notes;
 		Point top;
 		int dx, dy, divisions;
 
