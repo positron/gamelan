@@ -15,8 +15,11 @@ Gamelan_Window::Gamelan_Window()
 	but_amazing( Point((x_max()-400),(y_max()-200)),200,20,"Amazing Grace", cb_amazing),
 	but_sweet( Point((x_max()-400),(y_max()-150)),200,20,"Swing Low, Sweet Chariot", cb_sweet),
 	but_west( Point((x_max()-400),(y_max()-100)),200,20,"Westminster", cb_west),
+	instr( Point( 100, 110 ), "Click the circles to get through the song as fast as you can!" ),
 
 	//Final Screen objects
+	top_scores( Point( 245, 110 ), "Top Scores" ),
+	your_score( Point( 100, 700 ), "" ),
 	score1( Point(100,275), "" ),
 	score2( Point(100,300), "" ),
 	score3( Point(100,325), "" ),
@@ -24,7 +27,7 @@ Gamelan_Window::Gamelan_Window()
 	score5( Point(100,375), "" )
 {
 	for( int i = 0; i < 7; i++ )
-		strings[i] = new Gam_String( Point( 200 + 25*i, 50 ), -105 + 35*i, 700, NUM_DIVISIONS );
+		strings[i] = new Gam_String( Point( 200 + 25*i, 50 ), -105 + 35*i, 700, NUM_DIVISIONS, COLORS[i] );
 	init();
 }
 
@@ -42,6 +45,8 @@ void Gamelan_Window::init()
 	attach( but_amazing );
 	attach( but_sweet );
 	attach( but_west );
+	instr.set_font_size(14);
+	attach( instr );
 }
 
 void Gamelan_Window::play( string filename )
@@ -50,11 +55,13 @@ void Gamelan_Window::play( string filename )
 	user_name = in_name.get_string();
 	if( user_name == "" )
 		user_name = "Anonymous";
+
 	//detach start screen objects
 	detach( in_name );
 	detach( but_amazing );
 	detach( but_sweet );
 	detach( but_west );
+	detach( instr );
 
 	//attach game objects
 	for( int i = 0; i < 7; i++ )
@@ -67,7 +74,7 @@ void Gamelan_Window::play( string filename )
 		strings[ song[i] ]->add_note();
 	}
 	//set the index to the next note
-	index = NUM_DIVISIONS;
+	index = NUM_DIVISIONS - 1;
 	Fl::redraw();
 
 	//set the cursor to be a crosshairs
@@ -95,7 +102,7 @@ int Gamelan_Window::handle( int event )
 	//calculate what string it hit by
 	int str = (x - 65) / 60;
 	//normalize the point so 0,0 is the center of the string
-	bool hit = strings[ str ]->handle_mouse( x - 65 - 60*str, y - 750 );
+	bool hit = strings[ str ]->handle_mouse( x - 95 - 60*str, y - 750 );
 	if( hit )
 	{
 		increment_all();
@@ -121,7 +128,6 @@ void Gamelan_Window::end_game()
 	time( &end );
 	double time = difftime( end, start );
 	int score = song.size() * 1000.0 / time;
-	cout << score << '\n';
 
 	//set the cursor back to normal
 	cursor( FL_CURSOR_DEFAULT );
@@ -138,6 +144,14 @@ void Gamelan_Window::display_scores( int score )
 {
 	Score_IO::add_score( user_name, score );
 	vector<string> scores = Score_IO::top_scores();
+
+	top_scores.set_font_size( 20 );
+	attach( top_scores );
+
+	your_score.set_font_size( 19 );
+	your_score.set_font(Font::courier_bold);
+	your_score.set_label( "Your Score: " + int_to_string( score ) );
+	attach( your_score );
 
 	//Attach the high scores: alternate colors and set font to a monospace font
 	//so the spacing works
@@ -198,4 +212,15 @@ void Gamelan_Window::cb_sweet( Address, Address gw )
 void Gamelan_Window::cb_west( Address, Address gw )
 {
 	static_cast<Gamelan_Window*>(gw) -> play( "west" );
+}
+
+//aptly named helper function
+string int_to_string( int i )
+{
+	//if this is the only way to do this C++ is retarded
+	stringstream ss;
+	string str;
+	ss << i;
+	ss >> str;
+	return str;
 }

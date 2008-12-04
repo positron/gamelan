@@ -54,14 +54,23 @@ class Gamelan_Window : public Window
 		Button but_amazing;
 		Button but_sweet;
 		Button but_west;
+		Text instr;
 
 		//final screen objects
+		Text top_scores;
+		Text your_score;
 		Text score1;
 		Text score2;
 		Text score3;
 		Text score4;
 		Text score5;
 };
+
+string int_to_string( int );
+
+static Color COLORS[] = { Color(Color::red), Color(Color::dark_yellow),
+			 Color(Color::blue), Color(Color::green), Color(Color::dark_cyan),
+			 Color(Color::dark_green), Color(Color::magenta) };
 
 //defaults
 static Point DEF_LOCATION = Point(50,50);

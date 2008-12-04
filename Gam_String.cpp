@@ -8,12 +8,12 @@
  *                this also tells how many times it takes to shift a note down
  *                the entire string
  */
-Gam_String::Gam_String( Point top_pt, int dxx, int dyy, int num_divisions )
+Gam_String::Gam_String( Point top_pt, int dxx, int dyy, int num_divisions, Color col )
 	:top(top_pt), dx(dxx), dy(dyy), divisions(num_divisions), notes( num_divisions ),
 	 line( top_pt, Point( top_pt.x + dxx, top_pt.y + dyy ) )
 {
 	for( int i = 0; i < num_divisions; i++ )
-		notes[i].circ = create_note( i );
+		notes[i].circ = create_note( i, col );
 }
 
 Gam_String::~Gam_String()
@@ -29,13 +29,15 @@ void Gam_String::add_note()
 
 //creates a note at the ith division of this string with correctly computed
 //radius and position
-Circle* Gam_String::create_note( int i )
+Circle* Gam_String::create_note( int i, Color col )
 {
 	Point pt( top.x + (double)(i)/(divisions-1)*dx, top.y + (double)(i)/(divisions-1)*dy );
 	//radius is 10 at top and 30 at bottom
 	int radius = 10 + (double)(i)/(divisions-1)*20.0;
 	//we must make a new circle otherwise it would go out of scope when this function ends
-	Circle * c = new Circle( pt, radius );
+	Circle * c = new Circle( pt, radius/2 );
+	c->set_style( Line_style( Line_style::solid, radius ) );
+	c->set_color( col );
 	return c;
 }
 
@@ -65,11 +67,14 @@ void Gam_String::increment()
 
 bool Gam_String::handle_mouse( int x, int y )
 {
-	//cout << x << " " << y << " " << notes[ divisions - 1 ].displayed << '\n';
 	//if there is no note to even click, return false
 	if( !notes[ divisions - 1 ].displayed ) return false;
 
-	return true;
+	//use distance formula to calculate distance between click and center of the note
+	int distance = sqrt( x*x + y*y );
+	//cout << x << " " << y << " " << distance << "\n"; //debug
+	//the user hit the note if the distance is less than the radius (30)
+	return distance < 30;
 }
 
 void Gam_String::attach( Gamelan_Window& w )

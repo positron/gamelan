@@ -25,12 +25,12 @@ struct Note
 class Gam_String
 {
 	public:
-		Gam_String( Point top_pt, int dxx, int dyy, int num_divisions );
+		Gam_String( Point top_pt, int dxx, int dyy, int num_divisions, Color col );
 		~Gam_String();
 
 		void increment();
 		void add_note();
-		Circle* create_note( int i );
+		Circle* create_note( int i, Color col );
 
 		//handle mouse events. Returns true if it hit a note.
 		bool handle_mouse( int x, int y );
